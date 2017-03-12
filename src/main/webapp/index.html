@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+  <head>
+    <title>TODO supply a title</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h3>Semester Seed - REST Backend</h3>
+
+      <p>This is a (non-database version, you need to add the database, this version uses "dummy" data) backend for this matching
+        <a href="https://github.com/Lars-m/semesterSeedReactClient.git">React Front End</a></p>
+      <h4>This Backend provides, out of the box:</h4>
+      <ul>
+        <li>Token Based Authentication (using a memory structure for users, you will have to change that)</li>
+        <li>Two predefined user roles (with a  sample REST-endpoint for each)
+          <ul>
+            <li>User</li>
+            <li>Admin</li>
+          </ul>
+        </li>
+        <li>Built in filters to allow CORS</li>
+      </ul>
+      <br/>
+      <br/>
+      <h4>Using the two projects</h2>
+        <ul>
+          <li>For development just start this server, and start the client using <code>npm start</code> (in this order) and it should work </li>
+          <li>For deployment:
+            <ul>
+              <li>either deploy on separate servers (rememember to set  <em>serverURL</em> in the clients <code>package.json</code>)</li>
+              <li>or add everything from the clients <b>build folder</b> (after a <code>npm run build</code>) to the root of this projects <b>Web Pages</b> folder.<br/>
+                Read the instructions related to <code>server root</code> after the <code>npm run build</code> on the client (in the terminal)</li>
+            </ul>
+          </li>
+        </ul>
+
+    </div>
+  </body>
+</html>
