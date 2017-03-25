@@ -1,6 +1,5 @@
 package security;
 
-
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -14,6 +13,8 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.Priority;
 import javax.annotation.security.DenyAll;
 import javax.annotation.security.PermitAll;
@@ -28,7 +29,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
 
-
 @Provider
 @Priority(Priorities.AUTHENTICATION)
 public class JWTAuthenticationFilter implements ContainerRequestFilter {
@@ -40,22 +40,22 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
 
   @Override
   public void filter(ContainerRequestContext request) throws IOException {
-    
+
     if (isSecuredResource()) {
       String authorizationHeader = request.getHeaderString("Authorization");
       if (authorizationHeader == null) {
-         throw new NotAuthorizedException("No authorization header provided",Response.Status.UNAUTHORIZED);
+        throw new NotAuthorizedException("No authorization header provided", Response.Status.UNAUTHORIZED);
       }
       String token = request.getHeaderString("Authorization").substring("Bearer ".length());
       try {
         if (tokenIsExpired(token)) {
-           throw new NotAuthorizedException("Your authorization token has timed out, please login again",Response.Status.UNAUTHORIZED);
+          throw new NotAuthorizedException("Your authorization token has timed out, please login again", Response.Status.UNAUTHORIZED);
         }
 
         String username = getUsernameFromToken(token);
         final UserPrincipal user = getPricipalByUserId(username);
         if (user == null) {
-          throw new NotAuthorizedException("User could not be authenticated via the provided token",Response.Status.FORBIDDEN);
+          throw new NotAuthorizedException("User could not be authenticated via the provided token", Response.Status.FORBIDDEN);
         }
 
         request.setSecurityContext(new SecurityContext() {
@@ -82,16 +82,16 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
         });
 
       } catch (ParseException | JOSEException e) {
-        throw new NotAuthorizedException("You are not authorized to perform this action",Response.Status.FORBIDDEN);        
+        throw new NotAuthorizedException("You are not authorized to perform this action", Response.Status.FORBIDDEN);
       }
     }
   }
-  
+
   private UserPrincipal getPricipalByUserId(String userId) {
     IUserFacade facade = UserFacadeFactory.getInstance();
     IUser user = facade.getUserByUserId(userId);
     if (user != null) {
-      return new UserPrincipal(user.getUserName(), user.getRolesAsStrings());  
+      return new UserPrincipal(user.getUserName(), user.getRolesAsStrings());
     }
     return null;
   }
@@ -103,7 +103,7 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
         return true;
       }
     }
-   
+
     for (Class<? extends Annotation> securityClass : securityAnnotations) {
       if (resourceInfo.getResourceClass().isAnnotationPresent(securityClass)) {
         return true;
@@ -114,11 +114,18 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
   }
 
   private boolean tokenIsExpired(String token) throws ParseException, JOSEException {
-    SignedJWT signedJWT = SignedJWT.parse(token);
-    JWSVerifier verifier = new MACVerifier(Secret.SHARED_SECRET);
+    try {
+      SignedJWT signedJWT = SignedJWT.parse(token);
+      JWSVerifier verifier = new MACVerifier(Secret.SHARED_SECRET);
 
-    if (signedJWT.verify(verifier)) {
-      return new Date().getTime() > signedJWT.getJWTClaimsSet().getExpirationTime().getTime();
+      if (signedJWT.verify(verifier)) {
+        return new Date().getTime() > signedJWT.getJWTClaimsSet().getExpirationTime().getTime();
+      }
+    } catch(Exception ex){
+      String message = "Token was not valid: (Did you Restart the server while a user was logged in))";
+     
+      Logger.getLogger(JWTAuthenticationFilter.class.getName()).log(Level.SEVERE, message,ex);
+     throw new NotAuthorizedException("Your authorization token has timed out, please login again",Response.Status.UNAUTHORIZED);
     }
     return false;
   }
@@ -135,4 +142,3 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
     }
   }
 }
-

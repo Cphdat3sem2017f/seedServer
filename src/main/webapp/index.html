@@ -13,20 +13,23 @@ and open the template in the editor.
   </head>
   <body>
     <div class="container">
-      <h3>Semester Seed - REST Backend</h3>
+      <h2 style="color:darkblue">Semester Seed - REST Backend</h2>
 
-      <p>This is a (non-database version, you need to add the database, this version uses "dummy" data) backend for this matching
+      <p>This is a backend for this matching
         <a href="https://github.com/Lars-m/semesterSeedReactClient.git">React Front End</a></p>
       <h4>This Backend provides, out of the box:</h4>
       <ul>
-        <li>Token Based Authentication (using a memory structure for users, you will have to change that)</li>
+        <li>Token Based Authentication</li>
         <li>Two predefined user roles (with a  sample REST-endpoint for each)
           <ul>
             <li>User</li>
             <li>Admin</li>
           </ul>
         </li>
+        <li>It user an in-memory database, to let you run the server right after cloning.<br/> You must change this to point to 
+          <b>your own MySQL instance, either locally or remote</b></li>
         <li>Built in filters to allow CORS</li>
+        <li style="color:red">It stores passwords in <b>PLAIN-TEXT</b>, you must <b>FIX THAT</b> </li>
       </ul>
       <br/>
       <br/>

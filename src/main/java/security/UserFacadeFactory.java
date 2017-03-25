@@ -1,18 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package security;
 
 import facades.UserFacade;
+import javax.persistence.Persistence;
 
 /**
  *
  * @author lam
  */
 public class UserFacadeFactory {
-    private static  IUserFacade instance = new UserFacade();
+//    private static final IUserFacade instance = 
+//            new UserFacade(Persistence.createEntityManagerFactory(DeploymentConfiguration.PU_NAME));
+private static final IUserFacade instance = new UserFacade(Persistence.createEntityManagerFactory("pu_development"));
     public static IUserFacade getInstance(){
         return instance;
     }

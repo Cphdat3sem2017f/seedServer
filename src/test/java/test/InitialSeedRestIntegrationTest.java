@@ -10,6 +10,7 @@ import javax.servlet.ServletException;
 import org.apache.catalina.LifecycleException;
 import static org.hamcrest.Matchers.*;
 import org.junit.AfterClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import test.utils.EmbeddedTomcat;
 
