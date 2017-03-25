@@ -3,7 +3,6 @@ package security;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.*;
@@ -46,16 +45,14 @@ public class Login {
         responseJson.addProperty("token", token);
         return Response.ok(new Gson().toJson(responseJson)).build();
       }
-    }
-    catch (Exception e){
-      if(e instanceof JOSEException){
+    } catch (Exception e) {
+      if (e instanceof JOSEException) {
         throw e;
       }
     }
     throw new NotAuthorizedException("Invalid username or password. Please try again", Response.Status.UNAUTHORIZED);
   }
 
-  
   private List<String> authenticate(String userName, String password) {
     IUserFacade facade = UserFacadeFactory.getInstance();
     return facade.authenticateUser(userName, password);
@@ -69,11 +66,21 @@ public class Login {
     }
     String rolesAsString = res.length() > 0 ? res.substring(0, res.length() - 1) : "";
     String issuer = "semester3demo-cphbusiness.dk-computerScience";
-    // Generate random 256-bit (32-byte) shared secret
-    SecureRandom random = new SecureRandom();
-    Secret.SHARED_SECRET = new byte[32];
-    random.nextBytes(Secret.SHARED_SECRET);
 
+    
+    if (Secret.SHARED_SECRET == null) {
+      /*
+       A (much) better solution would be to have a fixed "secret" stored somewhere safe. 
+       This solution will render all issued tokens invalid, if the server is restarted
+       It's done like this, to force you to know what you do. If you have a "fixed" secret, stored in a 
+       public Git repository, you have NO security at all.
+      */
+      
+      // Generate random 256-bit (32-byte) shared secret
+      SecureRandom random = new SecureRandom();
+      Secret.SHARED_SECRET = new byte[32];
+      random.nextBytes(Secret.SHARED_SECRET);
+    }
     JWSSigner signer = new MACSigner(Secret.SHARED_SECRET);
     Date date = new Date();
 

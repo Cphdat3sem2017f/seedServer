@@ -121,11 +121,13 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
       if (signedJWT.verify(verifier)) {
         return new Date().getTime() > signedJWT.getJWTClaimsSet().getExpirationTime().getTime();
       }
+    } catch(JOSEException | ParseException ex){
+      throw ex;
     } catch(Exception ex){
+      
       String message = "Token was not valid: (Did you Restart the server while a user was logged in))";
-     
       Logger.getLogger(JWTAuthenticationFilter.class.getName()).log(Level.SEVERE, message,ex);
-     throw new NotAuthorizedException("Your authorization token has timed out, please login again",Response.Status.UNAUTHORIZED);
+     throw new NotAuthorizedException("Your authorization token was not valid (try and login again)",Response.Status.UNAUTHORIZED);
     }
     return false;
   }
