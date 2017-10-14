@@ -23,9 +23,6 @@ public class EmbeddedTomcat {
   
   Tomcat tomcat;
 
-//  public static void main(String[] args) throws Exception {
-//    new EmbeddedTomcat().start();
-//  }
 
   public void start(int port,String appContext) throws ServletException,
           MalformedURLException,

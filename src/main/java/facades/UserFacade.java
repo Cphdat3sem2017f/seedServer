@@ -3,9 +3,14 @@ package facades;
 import security.IUserFacade;
 import entity.User;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.ws.rs.NotAuthorizedException;
+import javax.ws.rs.core.Response;
 import security.IUser;
+import security.PasswordStorage;
 
 public class UserFacade implements IUserFacade {
 
@@ -34,8 +39,14 @@ public class UserFacade implements IUserFacade {
    */
   @Override
   public List<String> authenticateUser(String userName, String password) {
-    IUser user = getUserByUserId(userName);
-    return user != null && password.equals(user.getPassword()) ? user.getRolesAsStrings() : null;  
+    try {
+      System.out.println("User Before:" + userName+", "+password);
+      IUser user = getUserByUserId(userName);  
+      System.out.println("User After:" + user.getUserName()+", "+user.getPasswordHash());
+      return user != null && PasswordStorage.verifyPassword(password, user.getPasswordHash()) ? user.getRolesAsStrings() : null;
+    } catch (PasswordStorage.CannotPerformOperationException | PasswordStorage.InvalidHashException ex) {
+      throw new NotAuthorizedException("Invalid username or password", Response.Status.FORBIDDEN);
+    }
   }
 
 }

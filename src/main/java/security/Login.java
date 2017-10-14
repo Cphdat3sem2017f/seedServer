@@ -50,7 +50,7 @@ public class Login {
         throw e;
       }
     }
-    throw new NotAuthorizedException("Invalid username or password. Please try again", Response.Status.UNAUTHORIZED);
+    throw new NotAuthorizedException("Invalid username or password! Please try again", Response.Status.UNAUTHORIZED);
   }
 
   private List<String> authenticate(String userName, String password) {
@@ -67,20 +67,6 @@ public class Login {
     String rolesAsString = res.length() > 0 ? res.substring(0, res.length() - 1) : "";
     String issuer = "semester3demo-cphbusiness.dk-computerScience";
 
-    
-    if (Secret.SHARED_SECRET == null) {
-      /*
-       A (much) better solution would be to have a fixed "secret" stored somewhere safe. 
-       This solution will render all issued tokens invalid, if the server is restarted
-       It's done like this, to force you to know what you do. If you have a "fixed" secret, stored in a 
-       public Git repository, you have NO security at all.
-      */
-      
-      // Generate random 256-bit (32-byte) shared secret
-      SecureRandom random = new SecureRandom();
-      Secret.SHARED_SECRET = new byte[32];
-      random.nextBytes(Secret.SHARED_SECRET);
-    }
     JWSSigner signer = new MACSigner(Secret.SHARED_SECRET);
     Date date = new Date();
 

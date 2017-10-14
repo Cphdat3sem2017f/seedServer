@@ -1,4 +1,7 @@
 target/
+
+/src/main/resources/META-INF/persistence.xml
+
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -10,5 +13,7 @@ buildNumber.properties
 .mvn/timing.properties
 
 derby.log
+
+
 
 nb-configuration.xml

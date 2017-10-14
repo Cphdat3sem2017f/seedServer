@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import security.IUser;
+import security.PasswordStorage;
 
 @Entity(name = "SEED_USER")
 public class User implements IUser, Serializable{
@@ -26,9 +27,9 @@ public class User implements IUser, Serializable{
   public User() {
   }
 
-  public User(String userName, String password) {
+  public User(String userName, String password) throws PasswordStorage.CannotPerformOperationException {
     this.userName = userName;
-    this.passwordHash = password;
+    this.passwordHash = PasswordStorage.createHash(password);
   }
   
   
@@ -57,13 +58,13 @@ public class User implements IUser, Serializable{
   }
  
   @Override
-  public String getPassword() {
+  public String getPasswordHash() {
     return passwordHash;
   }
   
 
-  public void setPassword(String password) {
-    this.passwordHash = password;
+  public void setPassword(String password) throws PasswordStorage.CannotPerformOperationException {
+    this.passwordHash = PasswordStorage.createHash(password);
   }
 
   @Override
