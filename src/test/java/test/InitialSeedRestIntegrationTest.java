@@ -69,7 +69,7 @@ public class InitialSeedRestIntegrationTest {
   }
 
   @Test
-  
+  @Ignore
   public void tesRestForAdmin() {
     login("admin","test");
     given()
@@ -83,6 +83,7 @@ public class InitialSeedRestIntegrationTest {
   }
 
   @Test
+  @Ignore
   public void testRestForUser() {
     login("user","test");
     given()
@@ -95,6 +96,7 @@ public class InitialSeedRestIntegrationTest {
   }
   
   @Test
+  @Ignore
   public void userNotAuthenticated() {
     logOut();
     given()
@@ -106,6 +108,7 @@ public class InitialSeedRestIntegrationTest {
   }
   
   @Test
+  @Ignore
   public void adminNotAuthenticated() {
     logOut();
     given()
